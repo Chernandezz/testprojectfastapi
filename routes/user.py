@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from config.supabase_client import supabase
-from schemas.user import UserCreate, UserUpdate, User
+from schemas.user import UserCreate, UserUpdate
 import os
 from fastapi import HTTPException
 from dotenv import load_dotenv
@@ -15,12 +15,12 @@ f = Fernet(key)
 user  = APIRouter()
 
 
-@user.get("/users", response_model=list[User], tags=["users"])
+@user.get("/users", tags=["users"])
 async def get_users():
     results = supabase.table("users").select("*").execute()
     return results.data
 
-@user.post("/users", response_model=User, tags=["users"])
+@user.post("/users", tags=["users"])
 async def get_users(user: UserCreate):
     data = user.model_dump()
     data["password"] = f.encrypt(user.password.encode()).decode()
